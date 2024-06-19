@@ -1,0 +1,162 @@
+!
+! Last configuration change at 15:03:12 UTC Wed Jun 19 2024
+!
+version 16.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname FAI_R4_B3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 5 $1$ah3n$CfD9grHTm3ZgABQjUx6i2.
+!
+no aaa new-model
+!
+no ip domain lookup
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+multilink bundle-name authenticated
+!
+!
+!
+crypto pki trustpoint TP-self-signed-2556467810
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2556467810
+ revocation-check none
+ rsakeypair TP-self-signed-2556467810
+!
+!
+crypto pki certificate chain TP-self-signed-2556467810
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 32353536 34363738 3130301E 170D3234 30363139 31343534
+  35345A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 35353634
+  36373831 30308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201
+  0A028201 0100D9D6 33990E05 F2576621 B90E9B06 0499C47A 43F7729D 13AAB1D9
+  D8590B8A B8A50271 7487CC4D 8376B28A 27107C8A 50C8A2CF C8943524 74D0612B
+  538614B5 B3B9549F FA43BFBD E99ACDA6 3A5BD419 0BCF0573 29468F4F 3D4E653B
+  DA2870D4 95E1F4B6 A7DA4F89 06C120D9 1B839089 A5DDD75D BE42CAFD A1CB13F9
+  02CCA001 7D08B335 6D52E874 3D3DA224 A4EF788D 06D29E18 CF430BED E848D077
+  CFDE8144 DE5DB093 EA0F4266 AB1F99D1 AB07D99C 12713858 4147087A 343A50EA
+  2DF14D6C 6BFFD90E 5C27BF76 A882DCED 3EE06D4E B0600EBD 747CF181 A1D84AE2
+  95334989 DD80C974 945C2217 244186B9 3F1F964B FDC1DE98 159EF27B 6CFC41B0
+  FAB1C78A 39210203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF
+  301F0603 551D2304 18301680 14202F47 292E2C31 267CB3E5 A6455A01 E2FC6EA4
+  DB301D06 03551D0E 04160414 202F4729 2E2C3126 7CB3E5A6 455A01E2 FC6EA4DB
+  300D0609 2A864886 F70D0101 05050003 82010100 8ACF285C FF71E49C CFA0F313
+  32B38BD6 6E089C71 59EA2127 40AC6150 0B43AE03 4F030739 783F27F3 0C42BFF5
+  EAB7A2E8 195DE6FB 051CBA6B ED870FAD 40EB6E65 AE125E7C 5486E612 CE1E0905
+  4CAC9467 44F9CFCE A67E6091 4298EC5C 94D2D53A F9ACB994 426C1A0E 17F529D0
+  C4374B8D 6C59E5EE 849F8F57 3250E63D 7B7FBC3B 28D2AC80 89C7E1C7 8420F6B3
+  40E3D474 744315BA 78BFD39E 13B71748 4DF15638 DDB9B8F8 EC717755 F2FD824E
+  D6E6E29E DDA8E642 4D68806F F8569A52 5805955C 91E162A0 0E43B148 0880D094
+  2B11DA0F A5D9385D B891378E F58C4469 63E98534 005D9F15 90C7E15D AD77BB81
+  D92EF7E7 6604CD62 96B47A76 8CCDBD18 49A24619
+        quit
+!
+license udi pid ISR4321/K9 sn FDO233808MD
+no license smart enable
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+!
+!
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ ip address 42.0.0.26 255.255.255.252
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ no ip address
+ shutdown
+ negotiation auto
+!
+router ospf 1
+ router-id 4.4.4.4
+ network 42.0.0.24 0.0.0.3 area 0
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^CUnauthorized Access is Prohibited!^C
+!
+line con 0
+ password 7 01100F175804
+ logging synchronous
+ login
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ password 7 02050D480809
+ login
+!
+!
+!
+!
+!
+!
+end
+

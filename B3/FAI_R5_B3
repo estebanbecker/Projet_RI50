@@ -1,0 +1,165 @@
+!
+! Last configuration change at 14:59:19 UTC Wed Jun 19 2024
+!
+version 16.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname FAI_R5_B3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 5 $1$gGtS$dMoWwOUpmHo3D.hPNrewH.
+!
+no aaa new-model
+!
+no ip domain lookup
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+multilink bundle-name authenticated
+!
+!
+!
+crypto pki trustpoint TP-self-signed-3779505126
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3779505126
+ revocation-check none
+ rsakeypair TP-self-signed-3779505126
+!
+!
+crypto pki certificate chain TP-self-signed-3779505126
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33373739 35303531 3236301E 170D3234 30363139 31343531
+  31335A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 37373935
+  30353132 36308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201
+  0A028201 0100AC0D 93686867 1305DB3B 08BBA483 6329A136 203C7234 DCC171F7
+  62750F68 5E91673F E3984BE0 11CCED90 2A75246A 6A647E5A 40A76F9D 08C54855
+  F5BA96B4 22E4ACFC 55171FAE 8AA5D026 BF71B7FF 2882F62A C68F17FD 1B0CA836
+  A12F7478 5C08413C 9995E429 852F2383 0FC1D3EE 87FFCAB2 0C45C6AD 642ED925
+  7719C71D 60195E94 08EF1FB4 37DEC38F D32B8809 138BEA8D C5A9BC7B 21883AD6
+  2FFFC3AA 47BD1D8E 09119A8E A2326BAB C0C6EF5F E9E26E14 59BDD964 CC5A068A
+  19944707 21DF2ACB FF528B2D B204F03B 5D03503F 93508454 7786ECD2 70D141B6
+  8F5A8532 C28F7CCC 4F2E5AF3 9FC5C19C 62B718D6 F7C709C5 9BE5E5A6 7E33B2AE
+  714E791E 29710203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF
+  301F0603 551D2304 18301680 14D923F2 0AD65B59 51C4780D 991A815B C4D05059
+  37301D06 03551D0E 04160414 D923F20A D65B5951 C4780D99 1A815BC4 D0505937
+  300D0609 2A864886 F70D0101 05050003 82010100 15C9CAC7 D11B1EA2 307B28E1
+  DB341DD6 E4930277 3D0C0FEB 54C4003D 1CA0302F 5CAF0BCC 6DC454BA DD1FC473
+  CBFA08A0 0B7CE8D0 07742E61 7D6E32A4 1EDC509C 1B551837 FBC15121 C90E957C
+  B2FE670F E7B7A4B2 CA32328B 440E0A12 4D4EA634 9AA00904 28316ACB E2094AA1
+  93E12FB1 9E950960 641E0955 91049F1E 8A42BBF8 A800ED7E 6A78FAEF 43D5197A
+  1E7CE710 CF0DF264 B3A6944A 32C2A04F 695EDAE1 65C93631 37DAFD0D 1EF7208B
+  0F8770F9 56811AC9 5CD7D136 F8DE516D A78B5C89 F560A221 650A63AD C42F44A6
+  8950884D 3B659A77 E50C71B0 752BAFD0 EBD38B6E 36D4E0A9 EA4561D9 E5BE72D4
+  5A7A4797 7A4F58CC 35170141 142F9B3A 870400DC
+        quit
+!
+cts logging verbose
+license udi pid ISR4321/K9 sn FDO233808ND
+no license smart enable
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+!
+!
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ ip address 42.0.0.10 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ ip address 42.0.0.13 255.255.255.252
+ negotiation auto
+!
+interface Serial0/1/0
+ ip address 42.0.0.6 255.255.255.252
+!
+interface Serial0/1/1
+ ip address 42.0.0.25 255.255.255.252
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ no ip address
+ shutdown
+ negotiation auto
+!
+router ospf 1
+ router-id 5.5.5.5
+ passive-interface Serial0/1/0
+ network 42.0.0.4 0.0.0.3 area 0
+ network 42.0.0.8 0.0.0.3 area 0
+ network 42.0.0.12 0.0.0.3 area 0
+ network 42.0.0.24 0.0.0.3 area 0
+!
+ip forward-protocol nd
+no ip http server
+ip http authentication local
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^CCCUnauthorized Access is Prohibited!^C
+!
+line con 0
+ password 7 0822455D0A16
+ logging synchronous
+ login
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ password 7 104D000A0618
+ login
+ transport input none
+!
+!
+!
+!
+!
+!
+end
+
