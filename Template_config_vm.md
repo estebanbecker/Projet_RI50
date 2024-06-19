@@ -6,7 +6,6 @@
 - **Nom de la machine hôte** : (nom de la machine sur laquelle la VM est sauvegardée)
 - **Compte utilisateur** : (compte utilisateur sur lequel la VM est sauvegardée)
 - **Système d'exploitation** : (système d'exploitation installé sur la VM)
-- **Version du système d'exploitation** : (version du système d'exploitation installé sur la VM)
 
 ## Informations réseau
 
