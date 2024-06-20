@@ -55,27 +55,31 @@ vlan internal allocation policy ascending
 !
 !
 interface FastEthernet0/1
- switchport access vlan 200
+ switchport access vlan 150
  switchport mode access
  spanning-tree portfast
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/2
- switchport access vlan 50
+ switchport access vlan 150
  switchport mode access
  spanning-tree portfast
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/3
  switchport access vlan 150
  switchport mode access
  spanning-tree portfast
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/4
  switchport access vlan 150
  switchport mode access
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/5
  switchport access vlan 500
