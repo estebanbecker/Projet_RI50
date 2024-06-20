@@ -1,0 +1,324 @@
+DMC_SD1_A101#show run
+Building configuration...
+
+Current configuration : 5233 bytes
+!
+! Last configuration change at 11:32:35 UTC Thu Jun 20 2024
+! NVRAM config last updated at 11:46:23 UTC Thu Jun 20 2024
+!
+
+
+
+
+
+
+
+
+
+version 15.2
+no service pad
+no service timestamps debug uptime
+no service timestamps log uptime
+service password-encryption
+!
+hostname DMC_SD1_A101
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+no aaa new-model
+switch 1 provision ws-c2960x-24ts-l
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-4022179072
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4022179072
+ revocation-check none
+ rsakeypair TP-self-signed-4022179072
+!
+!
+crypto pki certificate chain TP-self-signed-4022179072
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 34303232 31373930 3732301E 170D3234 30363230 31313135
+  35365A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D34 30323231
+  37393037 3230819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  81009FBA 821F13E0 3F001A43 EE968C25 E9BF0D2E 8FBB18F5 7AAF9A90 26CC2FF3
+  D8E4A023 AC9EBE9D 3B6ABCF3 858AAC59 9AE1D76F FDBEA861 7D51434D 9325C7D9
+  B1926F25 EDA1D328 8EA37CEB 1F85075A 389427C9 41357826 6EE57E36 6514D3CC
+  38341BFB B0131628 8F3ED761 0358F6DC 4473A83D 85BBED40 30DEAB30 0DE1526E
+  0B6F0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603
+  551D2304 18301680 14A41EE1 3349AD1E B66F9A5B FD431CDD 9150327C BE301D06
+  03551D0E 04160414 A41EE133 49AD1EB6 6F9A5BFD 431CDD91 50327CBE 300D0609
+  2A864886 F70D0101 05050003 81810061 CE1494B1 18816E7E D216A27A FD63DDA7
+  5F23DD34 0D250383 AD8663A7 C9F3F9AF F08EB8E6 0C9DFC13 C0C857A2 C1A24652
+  DB4E5252 1175273E 400624CE A1B38D08 9CC1D185 3D0A9735 1EE47D67 BFF8F021
+  CCA7F1EF A2F60539 640DED99 B7669FA4 75D21BEB A72888F7 4843C749 A190962F
+  5846E72A CA909046 90F5E80F 54D7BC
+        quit
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+spanning-tree vlan 10,20,150,250 priority 24576
+spanning-tree vlan 30,40,50,200 priority 28672
+!
+!
+vtp version 2
+vtp mode server
+vtp domain DMC_Bank.com
+vtp password cisco
+!
+!
+!
+!
+!
+!
+vlan 10
+name Finance/Trading
+vlan 20
+name Marketing/Ventes/Logistique
+vlan 30
+name IT
+vlan 40
+name Admin/RH/Compta
+vlan 50
+name Service_Client
+vlan 150
+name Voice
+vlan 200
+name Servers
+vlan 250
+name Management
+vlan 500
+name Unused
+vlan 999
+name Native
+exit
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/0/1
+ switchport trunk allowed vlan 10,20,30,40,50,150,200,250,999
+ switchport trunk native vlan 999
+ switchport mode trunk
+ spanning-tree link-type point-to-point
+ no shutdown
+!
+interface GigabitEthernet1/0/2
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/3
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/4
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/5
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/6
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/7
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/8
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/9
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/10
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/11
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/12
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/13
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/14
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/15
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/16
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/17
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/18
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/19
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/20
+ switchport mode access
+ switchport access vlan 500
+ spanning-tree bpduguard enable
+ shutdown
+!
+interface GigabitEthernet1/0/21
+ switchport trunk allowed vlan 10,20,30,40,50,150,200,250,999
+ switchport trunk native vlan 999
+ switchport mode trunk
+ spanning-tree link-type point-to-point
+ no shutdown
+!
+interface GigabitEthernet1/0/22
+ switchport trunk allowed vlan 10,20,30,40,50,150,200,250,999
+ switchport trunk native vlan 999
+ switchport mode trunk
+ spanning-tree link-type point-to-point
+ no shutdown
+!
+interface GigabitEthernet1/0/23
+ switchport trunk allowed vlan 10,20,30,40,50,150,200,250,999
+ switchport trunk native vlan 999
+ switchport mode trunk
+ spanning-tree link-type point-to-point
+ no shutdown
+!
+interface GigabitEthernet1/0/24
+ switchport trunk allowed vlan 10,20,30,40,50,150,200,250,999
+ switchport trunk native vlan 999
+ switchport mode trunk
+ spanning-tree link-type point-to-point
+ no shutdown
+!
+interface GigabitEthernet1/0/25
+!
+interface GigabitEthernet1/0/26
+!
+interface GigabitEthernet1/0/27
+!
+interface GigabitEthernet1/0/28
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan250
+ ip address 192.168.1.228 255.255.255.240
+ no shutdown
+!
+ip default-gateway 192.168.1.227
+!
+ip http server
+ip http secure-server
+!
+!
+!
+banner motd $Restricted Access! Authorized DMC Personnel Only!$
+!
+line con 0
+ exec-timeout 5 0
+ password 7 0822455D0A16
+ logging synchronous
+ login
+line vty 0 4
+ exec-timeout 5 0
+ password 7 0822455D0A16
+ logging synchronous
+ login
+ transport input none
+line vty 5 15
+ exec-timeout 5 0
+ password 7 0822455D0A16
+ logging synchronous
+ login
+ transport input none
+!
+!
+end
+
