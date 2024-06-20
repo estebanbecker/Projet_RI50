@@ -72,16 +72,18 @@ interface FastEthernet0/2
  spanning-tree bpduguard enable
 !
 interface FastEthernet0/3
- switchport access vlan 500
+ switchport access vlan 150
  switchport mode access
- shutdown
+ spanning-tree portfast
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/4
- switchport access vlan 500
+ switchport access vlan 150
  switchport mode access
- shutdown
+ spanning-tree portfast
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/5
  switchport access vlan 500
