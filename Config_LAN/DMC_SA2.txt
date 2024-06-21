@@ -15,7 +15,7 @@ no service timestamps debug uptime
 no service timestamps log uptime
 service password-encryption
 !
-hostname DMC_SA2_A108
+hostname DMC_SA2_B8
 !
 boot-start-marker
 boot-end-marker
