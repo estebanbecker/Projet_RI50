@@ -1,5 +1,5 @@
 !
-! Last configuration change at 14:59:19 UTC Wed Jun 19 2024
+! Last configuration change at 10:18:14 UTC Fri Jun 21 2024
 !
 version 16.9
 service timestamps debug datetime msec
@@ -89,6 +89,7 @@ spanning-tree extend system-id
 !
 !
 !
+username FAI_R5_B3 password 7 060503205F5D
 !
 redundancy
  mode none
@@ -110,6 +111,10 @@ interface GigabitEthernet0/0/1
 !
 interface Serial0/1/0
  ip address 42.0.0.6 255.255.255.252
+ encapsulation ppp
+ ppp authentication chap
+ ppp chap hostname DMC_R2_B8
+ ppp chap password 7 14141E0A1F17
 !
 interface Serial0/1/1
  ip address 42.0.0.25 255.255.255.252
@@ -162,4 +167,3 @@ line vty 0 4
 !
 !
 end
-
