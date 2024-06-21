@@ -1,5 +1,5 @@
 !
-! Last configuration change at 15:38:10 UTC Wed Jun 19 2024
+! Last configuration change at 12:20:44 UTC Fri Jun 21 2024
 !
 version 15.4
 service timestamps debug datetime msec
@@ -42,6 +42,7 @@ license udi pid CISCO1941/K9 sn FCZ191271PP
 license boot module c1900 technology-package securityk9
 !
 !
+username FAI_R1_B3 password 7 104D05181604
 !
 redundancy
 !
@@ -75,6 +76,10 @@ interface GigabitEthernet0/1
 !
 interface Serial0/0/0
  ip address 42.0.0.2 255.255.255.252
+ encapsulation ppp
+ ppp authentication chap
+ ppp chap hostname DMC_R1_B7
+ ppp chap password 7 110A15040401
  clock rate 128000
 !
 interface Serial0/0/1
@@ -123,4 +128,3 @@ line vty 0 4
 scheduler allocate 20000 1000
 !
 end
-
