@@ -17,7 +17,7 @@ no service timestamps debug uptime
 no service timestamps log uptime
 service password-encryption
 !
-hostname DMC_R1_A101
+hostname DMC_R1_B7
 !
 boot-start-marker
 boot-end-marker
