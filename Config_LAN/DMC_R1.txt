@@ -1,17 +1,6 @@
-DMC_R1_A101#show run
-Building configuration...
-
-Current configuration : 4149 bytes
 !
-! Last configuration change at 11:26:05 UTC Thu Jun 20 2024
+! Last configuration change at 11:12:34 UTC Fri Jun 21 2024
 !
-
-
-
-
-
-
-
 version 15.4
 no service timestamps debug uptime
 no service timestamps log uptime
@@ -90,6 +79,7 @@ license udi pid CISCO1941/K9 sn FCZ191271PN
 license boot module c1900 technology-package securityk9
 !
 !
+username DMC_R1_B7 password 7 13061B13181F
 !
 redundancy
 !
@@ -99,9 +89,23 @@ redundancy
 !
 !
 !
+crypto isakmp policy 10
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key CLASS address 42.0.0.18
+!
+crypto ipsec security-association lifetime seconds 86400
+!
+crypto ipsec transform-set VPN_DMC esp-aes esp-sha-hmac
+ mode tunnel
 !
 !
 !
+crypto map mapVPN 10 ipsec-isakmp
+ set peer 42.0.0.18
+ set transform-set VPN_DMC
+ match address VPN_TUNNEL
 !
 !
 !
@@ -115,13 +119,13 @@ interface GigabitEthernet0/0
  no ip address
  duplex auto
  speed auto
- no shutdown
 !
 interface GigabitEthernet0/1
  no ip address
+ ip nat inside
+ ip virtual-reassembly in
  duplex auto
  speed auto
- no shutdown
 !
 interface GigabitEthernet0/1.10
  encapsulation dot1Q 10
@@ -181,13 +185,18 @@ interface GigabitEthernet0/1.250
  standby 250 preempt
 !
 interface Serial0/0/0
- no ip address
- shutdown
+ ip address 42.0.0.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ encapsulation ppp
+ ppp authentication chap
+ ppp chap hostname FAI_R1_B3
+ ppp chap password 7 14141E0A1F17
 !
 interface Serial0/0/1
  no ip address
  shutdown
- clock rate 2000000
+ clock rate 128000
 !
 ip forward-protocol nd
 !
@@ -195,15 +204,30 @@ no ip http server
 no ip http secure-server
 ip flow-export version 9
 !
+ip nat inside source list 1 interface GigabitEthernet0/1 overload
+ip nat inside source list ACL_VPN interface Serial0/0/0 overload
+ip nat inside source static tcp 10.1.0.1 80 42.0.0.1 80 extendable
+ip nat inside source static tcp 10.1.0.1 443 42.0.0.1 443 extendable
 ip route 0.0.0.0 0.0.0.0 Serial0/0/0
 !
+ip access-list extended ACL_VPN
+ deny   ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
+ permit ip 192.168.1.0 0.0.0.255 any
+ip access-list extended VPN_TUNNEL
+ permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
+ permit ip 10.200.0.0 0.0.0.3 192.168.0.0 0.0.0.255
+ permit ip 10.200.0.4 0.0.0.3 192.168.0.0 0.0.0.255
+ permit ip 10.200.0.8 0.0.0.3 192.168.0.0 0.0.0.255
+ip access-list extended acl_VPN
 !
 !
+!
+access-list 1 permit 192.168.1.0 0.0.0.255
 !
 control-plane
 !
 !
-banner motd $Restricted Access! Authorized DMC Personnel Only!$
+banner motd ^CRestricted Access! Authorized DMC Personnel Only!^C
 !
 line con 0
  exec-timeout 5 0
