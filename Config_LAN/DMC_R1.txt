@@ -1,5 +1,5 @@
 !
-! Last configuration change at 11:12:34 UTC Fri Jun 21 2024
+! Last configuration change at 13:35:11 UTC Fri Jun 21 2024
 !
 version 15.4
 no service timestamps debug uptime
@@ -93,19 +93,19 @@ crypto isakmp policy 10
  encr aes
  authentication pre-share
  group 2
-crypto isakmp key CLASS address 42.0.0.18
+crypto isakmp key class address 42.0.0.18
 !
 crypto ipsec security-association lifetime seconds 86400
 !
-crypto ipsec transform-set VPN_DMC esp-aes esp-sha-hmac
+crypto ipsec transform-set CRYPTMETHODE esp-aes esp-sha-hmac
  mode tunnel
 !
 !
 !
 crypto map mapVPN 10 ipsec-isakmp
  set peer 42.0.0.18
- set transform-set VPN_DMC
- match address VPN_TUNNEL
+ set transform-set CRYPTMETHODE
+ match address VPN
 !
 !
 !
@@ -192,6 +192,7 @@ interface Serial0/0/0
  ppp authentication chap
  ppp chap hostname FAI_R1_B3
  ppp chap password 7 14141E0A1F17
+ crypto map mapVPN
 !
 interface Serial0/0/1
  no ip address
@@ -213,11 +214,10 @@ ip route 0.0.0.0 0.0.0.0 Serial0/0/0
 ip access-list extended ACL_VPN
  deny   ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
  permit ip 192.168.1.0 0.0.0.255 any
+ip access-list extended VPN
+ permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
 ip access-list extended VPN_TUNNEL
  permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
- permit ip 10.200.0.0 0.0.0.3 192.168.0.0 0.0.0.255
- permit ip 10.200.0.4 0.0.0.3 192.168.0.0 0.0.0.255
- permit ip 10.200.0.8 0.0.0.3 192.168.0.0 0.0.0.255
 ip access-list extended acl_VPN
 !
 !
