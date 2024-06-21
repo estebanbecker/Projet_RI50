@@ -1,0 +1,150 @@
+!
+! Last configuration change at 12:10:10 UTC Fri Jun 21 2024
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname HQ_R2_B4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$JCpq$saNPrHKtzd5ACajKGiEuz.
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ1923926V
+!
+!
+username HQ_R2_B4 password 7 05080A0E325F
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 10
+ encr aes
+ authentication pre-share
+ group 2
+crypto isakmp key class address 42.0.0.1
+!
+crypto ipsec security-association lifetime seconds 86400
+!
+crypto ipsec transform-set CRYPTMETHODE esp-aes esp-sha-hmac
+ mode tunnel
+!
+!
+!
+!
+crypto map mapVPN 10 ipsec-isakmp
+ set peer 42.0.0.1
+ set transform-set CRYPTMETHODE
+ match address VPN
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address 192.168.0.1 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/0/1
+ ip address 42.0.0.18 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ encapsulation ppp
+ ppp authentication chap
+ ppp chap hostname FAI_R3_B3
+ ppp chap password 7 070C2D4D5D1A
+ crypto map mapVPN
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip nat inside source list ACL_VPN interface Serial0/0/1 overload
+ip route 0.0.0.0 0.0.0.0 Serial0/0/1
+!
+ip access-list extended ACL_VPN
+ deny   ip 192.168.0.0 0.0.0.255 192.168.1.0 0.0.0.255
+ permit ip 192.168.0.0 0.0.0.255 any
+ip access-list extended VPN
+ permit ip 192.168.0.0 0.0.0.255 192.168.1.0 0.0.0.255
+ip access-list extended VPN_TUNNEL
+ permit ip 192.168.0.0 0.0.0.255 10.200.0.0 0.0.0.3
+!
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+ password 7 104D000A0618
+ logging synchronous
+ login
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password 7 094F471A1A0A
+ login
+ transport input none
+!
+scheduler allocate 20000 1000
+!
+end
