@@ -1,5 +1,5 @@
 !
-! Last configuration change at 13:04:37 UTC Wed Jun 19 2024
+! Last configuration change at 10:25:07 UTC Fri Jun 21 2024
 !
 version 15.4
 service timestamps debug datetime msec
@@ -41,6 +41,7 @@ cts logging verbose
 license udi pid CISCO1941/K9 sn FCZ1923926T
 !
 !
+username FAI_R3_B3 password 7 14141E0A1F17
 !
 redundancy
 !
@@ -74,6 +75,9 @@ interface GigabitEthernet0/1
 !
 interface Serial0/0/0
  ip address 42.0.0.17 255.255.255.252
+ encapsulation ppp
+ ppp chap hostname HQ_R2_B4
+ ppp chap password 7 045807071C32
  clock rate 128000
 !
 interface Serial0/0/1
