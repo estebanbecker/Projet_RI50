@@ -1,5 +1,5 @@
 !
-! Last configuration change at 07:50:27 UTC Tue Jun 25 2024
+! Last configuration change at 09:50:15 UTC Tue Jun 25 2024
 version 15.3
 no service timestamps debug uptime
 no service timestamps log uptime
@@ -44,7 +44,7 @@ redundancy
 !
 !
 !
-crypto isakmp policy 10
+crypto isakmp policy 20
  encr aes
  authentication pre-share
  group 2
@@ -57,7 +57,7 @@ crypto ipsec transform-set CRYPTMETHODE esp-aes esp-sha-hmac
 !
 !
 !
-crypto map mapVPN 10 ipsec-isakmp
+crypto map mapVPN 20 ipsec-isakmp
  set peer 42.0.0.18
  set transform-set CRYPTMETHODE
  match address VPN
@@ -71,8 +71,9 @@ interface Embedded-Service-Engine0/0
  shutdown
 !
 interface GigabitEthernet0/0
- no ip address
- shutdown
+ ip address 10.1.0.254 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
  duplex auto
  speed auto
 !
@@ -175,21 +176,24 @@ no ip http server
 no ip http secure-server
 ip flow-export version 9
 !
-ip nat inside source list 1 interface Serial0/0/0 overload
 ip nat inside source list ACL_VPN interface Serial0/0/0 overload
-ip nat inside source static tcp 10.1.0.1 80 40.0.0.5 80 extendable
-ip nat inside source static tcp 10.1.0.1 443 40.0.0.5 443 extendable
+ip nat inside source static tcp 10.1.0.1 80 42.0.0.5 80 extendable
+ip nat inside source static tcp 10.1.0.1 443 42.0.0.5 443 extendable
 ip route 0.0.0.0 0.0.0.0 Serial0/0/0
 !
 ip access-list extended ACL_VPN
  deny   ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
+ deny   ip 10.0.0.0 0.255.255.255 192.168.0.0 0.0.0.255
  permit ip 192.168.1.0 0.0.0.255 any
+ permit ip 10.0.0.0 0.255.255.255 any
 ip access-list extended VPN
  permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
+ permit ip 10.0.0.0 0.255.255.255 192.168.0.0 0.0.0.255
 !
 !
 !
 access-list 1 permit 192.168.1.0 0.0.0.255
+access-list 1 permit 10.1.0.0 0.0.0.255
 !
 control-plane
 !
