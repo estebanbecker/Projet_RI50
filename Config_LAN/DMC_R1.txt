@@ -1,6 +1,5 @@
-Current configuration : 5650 bytes
 !
-! Last configuration change at 08:44:39 UTC Tue Jun 25 2024
+! Last configuration change at 11:09:08 UTC Tue Jun 25 2024
 !
 version 15.4
 no service timestamps debug uptime
@@ -218,7 +217,6 @@ no ip http server
 no ip http secure-server
 ip flow-export version 9
 !
-ip nat inside source list 1 interface Serial0/0/0 overload
 ip nat inside source list ACL_VPN interface Serial0/0/0 overload
 ip nat inside source static tcp 10.1.0.1 80 42.0.0.1 80 extendable
 ip nat inside source static tcp 10.1.0.1 443 42.0.0.1 443 extendable
@@ -226,9 +224,12 @@ ip route 0.0.0.0 0.0.0.0 Serial0/0/0
 !
 ip access-list extended ACL_VPN
  deny   ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
+ deny   ip 10.0.0.0 0.255.255.255 192.168.0.0 0.0.0.255
  permit ip 192.168.1.0 0.0.0.255 any
+ permit ip 10.0.0.0 0.255.255.255 any
 ip access-list extended VPN
  permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
+ permit ip 10.0.0.0 0.255.255.255 192.168.0.0 0.0.0.255
 ip access-list extended VPN_TUNNEL
  permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
 ip access-list extended acl_VPN
@@ -236,6 +237,7 @@ ip access-list extended acl_VPN
 !
 !
 access-list 1 permit 192.168.1.0 0.0.0.255
+access-list 1 permit 0.0.0.0 255.255.255.0
 !
 control-plane
 !
