@@ -1,5 +1,6 @@
+Current configuration : 5650 bytes
 !
-! Last configuration change at 13:35:11 UTC Fri Jun 21 2024
+! Last configuration change at 08:44:39 UTC Tue Jun 25 2024
 !
 version 15.4
 no service timestamps debug uptime
@@ -130,6 +131,8 @@ interface GigabitEthernet0/1
 interface GigabitEthernet0/1.10
  encapsulation dot1Q 10
  ip address 192.168.1.65 255.255.255.224
+ ip nat inside
+ ip virtual-reassembly in
  standby version 2
  standby 10 ip 192.168.1.67
  standby 10 priority 150
@@ -138,6 +141,8 @@ interface GigabitEthernet0/1.10
 interface GigabitEthernet0/1.20
  encapsulation dot1Q 20
  ip address 192.168.1.97 255.255.255.224
+ ip nat inside
+ ip virtual-reassembly in
  standby version 2
  standby 20 ip 192.168.1.99
  standby 20 priority 150
@@ -146,18 +151,24 @@ interface GigabitEthernet0/1.20
 interface GigabitEthernet0/1.30
  encapsulation dot1Q 30
  ip address 192.168.1.129 255.255.255.224
+ ip nat inside
+ ip virtual-reassembly in
  standby version 2
  standby 30 ip 192.168.1.131
 !
 interface GigabitEthernet0/1.40
  encapsulation dot1Q 40
  ip address 192.168.1.161 255.255.255.224
+ ip nat inside
+ ip virtual-reassembly in
  standby version 2
  standby 40 ip 192.168.1.163
 !
 interface GigabitEthernet0/1.50
  encapsulation dot1Q 50
  ip address 192.168.1.193 255.255.255.240
+ ip nat inside
+ ip virtual-reassembly in
  standby version 2
  standby 50 ip 192.168.1.195
 !
@@ -165,6 +176,8 @@ interface GigabitEthernet0/1.150
  description Voice VLAN Sub-Interface
  encapsulation dot1Q 150
  ip address 192.168.1.1 255.255.255.192
+ ip nat inside
+ ip virtual-reassembly in
  standby version 2
  standby 150 ip 192.168.1.3
  standby 150 priority 150
@@ -205,7 +218,7 @@ no ip http server
 no ip http secure-server
 ip flow-export version 9
 !
-ip nat inside source list 1 interface GigabitEthernet0/1 overload
+ip nat inside source list 1 interface Serial0/0/0 overload
 ip nat inside source list ACL_VPN interface Serial0/0/0 overload
 ip nat inside source static tcp 10.1.0.1 80 42.0.0.1 80 extendable
 ip nat inside source static tcp 10.1.0.1 443 42.0.0.1 443 extendable
