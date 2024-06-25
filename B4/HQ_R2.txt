@@ -1,5 +1,6 @@
+Current configuration : 2727 bytes
 !
-! Last configuration change at 12:10:10 UTC Fri Jun 21 2024
+! Last configuration change at 09:49:17 UTC Tue Jun 25 2024
 !
 version 15.4
 service timestamps debug datetime msec
@@ -55,6 +56,11 @@ crypto isakmp policy 10
  encr aes
  authentication pre-share
  group 2
+!
+crypto isakmp policy 20
+ encr aes
+ authentication pre-share
+ group 2
 crypto isakmp key class address 42.0.0.1
 !
 crypto ipsec security-association lifetime seconds 86400
@@ -64,9 +70,17 @@ crypto ipsec transform-set CRYPTMETHODE esp-aes esp-sha-hmac
 !
 !
 !
-!
 crypto map mapVPN 10 ipsec-isakmp
  set peer 42.0.0.1
+ set transform-set CRYPTMETHODE
+ match address VPN
+crypto map mapVPN 20 ipsec-isakmp
+ set peer 42.0.0.5
+ set transform-set CRYPTMETHODE
+ match address VPN
+!
+crypto map mapVPN2 10 ipsec-isakmp
+ set peer 42.0.0.5
  set transform-set CRYPTMETHODE
  match address VPN
 !
@@ -116,9 +130,11 @@ ip route 0.0.0.0 0.0.0.0 Serial0/0/1
 !
 ip access-list extended ACL_VPN
  deny   ip 192.168.0.0 0.0.0.255 192.168.1.0 0.0.0.255
+ deny   ip 192.168.0.0 0.0.0.255 10.0.0.0 0.255.255.255
  permit ip 192.168.0.0 0.0.0.255 any
 ip access-list extended VPN
  permit ip 192.168.0.0 0.0.0.255 192.168.1.0 0.0.0.255
+ permit ip 192.168.0.0 0.0.0.255 10.0.0.0 0.255.255.255
 ip access-list extended VPN_TUNNEL
  permit ip 192.168.0.0 0.0.0.255 10.200.0.0 0.0.0.3
 !
