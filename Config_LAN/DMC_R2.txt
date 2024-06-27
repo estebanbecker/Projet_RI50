@@ -1,5 +1,5 @@
 !
-! Last configuration change at 09:50:15 UTC Tue Jun 25 2024
+! Last configuration change at 15:28:57 UTC Thu Jun 27 2024
 version 15.3
 no service timestamps debug uptime
 no service timestamps log uptime
@@ -71,7 +71,7 @@ interface Embedded-Service-Engine0/0
  shutdown
 !
 interface GigabitEthernet0/0
- ip address 10.1.0.254 255.255.255.0
+ ip address 10.200.1.2 255.255.255.252
  ip nat inside
  ip virtual-reassembly in
  duplex auto
@@ -81,79 +81,9 @@ interface GigabitEthernet0/1
  ip address 10.200.0.6 255.255.255.252
  ip nat inside
  ip virtual-reassembly in
+ ip ospf lls disable
  duplex auto
  speed auto
-!
-interface GigabitEthernet0/1.10
- encapsulation dot1Q 10
- ip address 192.168.1.66 255.255.255.224
- ip nat inside
- ip virtual-reassembly in
- standby version 2
- standby 10 ip 192.168.1.67
-!
-interface GigabitEthernet0/1.20
- encapsulation dot1Q 20
- ip address 192.168.1.98 255.255.255.224
- ip nat inside
- ip virtual-reassembly in
- standby version 2
- standby 20 ip 192.168.1.99
-!
-interface GigabitEthernet0/1.30
- encapsulation dot1Q 30
- ip address 192.168.1.130 255.255.255.224
- ip nat inside
- ip virtual-reassembly in
- standby version 2
- standby 30 ip 192.168.1.131
- standby 30 priority 150
- standby 30 preempt
-!
-interface GigabitEthernet0/1.40
- encapsulation dot1Q 40
- ip address 192.168.1.162 255.255.255.224
- ip nat inside
- ip virtual-reassembly in
- standby version 2
- standby 40 ip 192.168.1.163
- standby 40 priority 150
- standby 40 preempt
-!
-interface GigabitEthernet0/1.50
- encapsulation dot1Q 50
- ip address 192.168.1.194 255.255.255.240
- ip nat inside
- ip virtual-reassembly in
- standby version 2
- standby 50 ip 192.168.1.195
- standby 50 priority 150
- standby 50 preempt
-!
-interface GigabitEthernet0/1.100
- standby version 2
-!
-interface GigabitEthernet0/1.150
- encapsulation dot1Q 150
- ip address 192.168.1.2 255.255.255.192
- ip nat inside
- ip virtual-reassembly in
- standby version 2
- standby 150 ip 192.168.1.3
-!
-interface GigabitEthernet0/1.200
- encapsulation dot1Q 200
- ip address 192.168.1.210 255.255.255.240
- standby version 2
- standby 200 ip 192.168.1.211
- standby 200 priority 150
- standby 200 preempt
-!
-interface GigabitEthernet0/1.250
- encapsulation dot1Q 250
- ip address 192.168.1.226 255.255.255.240
- standby version 2
- standby 250 ip 192.168.1.227
 !
 interface Serial0/0/0
  ip address 42.0.0.5 255.255.255.252
@@ -170,6 +100,12 @@ interface Serial0/0/1
  shutdown
  clock rate 2000000
 !
+router ospf 1
+ router-id 2.2.2.2
+ passive-interface Serial0/0/0
+ network 10.200.0.4 0.0.0.3 area 0
+ network 10.200.1.0 0.0.0.3 area 0
+!
 ip forward-protocol nd
 !
 no ip http server
@@ -179,7 +115,13 @@ ip flow-export version 9
 ip nat inside source list ACL_VPN interface Serial0/0/0 overload
 ip nat inside source static tcp 10.1.0.1 80 42.0.0.5 80 extendable
 ip nat inside source static tcp 10.1.0.1 443 42.0.0.5 443 extendable
+ip nat inside source static udp 10.1.0.1 1194 42.0.0.5 1194 extendable
+ip nat inside source static udp 10.1.0.5 5080 42.0.0.5 5060 extendable
 ip route 0.0.0.0 0.0.0.0 Serial0/0/0
+ip route 10.1.0.0 255.255.255.0 GigabitEthernet0/1
+ip route 10.1.0.0 255.255.255.0 10.200.0.5
+ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1
+ip route 192.168.1.0 255.255.255.0 10.200.0.5
 !
 ip access-list extended ACL_VPN
  deny   ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
@@ -190,6 +132,7 @@ ip access-list extended VPN
  permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
  permit ip 10.0.0.0 0.255.255.255 192.168.0.0 0.0.0.255
 !
+ip sla responder
 !
 !
 access-list 1 permit 192.168.1.0 0.0.0.255
@@ -229,4 +172,3 @@ line vty 5 15
 scheduler allocate 20000 1000
 !
 end
-
