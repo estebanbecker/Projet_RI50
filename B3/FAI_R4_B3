@@ -1,5 +1,5 @@
 !
-! Last configuration change at 09:41:16 UTC Fri Jun 21 2024
+! Last configuration change at 09:48:07 UTC Thu Jun 27 2024
 !
 version 16.9
 service timestamps debug datetime msec
@@ -100,8 +100,7 @@ redundancy
 !
 !
 interface GigabitEthernet0/0/0
- no ip address
- shutdown
+ ip address 42.1.0.1 255.255.255.0
  negotiation auto
 !
 interface GigabitEthernet0/0/1
@@ -125,6 +124,7 @@ interface GigabitEthernet0
 router ospf 1
  router-id 4.4.4.4
  network 42.0.0.24 0.0.0.3 area 0
+ network 42.1.0.0 0.0.0.255 area 2
 !
 ip forward-protocol nd
 ip http server
