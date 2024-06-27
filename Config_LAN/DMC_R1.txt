@@ -1,11 +1,12 @@
 !
-! Last configuration change at 15:28:57 UTC Thu Jun 27 2024
-version 15.3
+! Last configuration change at 16:58:46 UTC Thu Jun 27 2024
+!
+version 15.4
 no service timestamps debug uptime
 no service timestamps log uptime
 service password-encryption
 !
-hostname DMC_R2_B8
+hostname DMC_R1_B7
 !
 boot-start-marker
 boot-end-marker
@@ -15,7 +16,13 @@ enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
 !
 no aaa new-model
 !
-no ip cef
+!
+!
+!
+!
+!
+!
+!
 !
 !
 !
@@ -23,18 +30,19 @@ no ip cef
 !
 !
 no ip domain lookup
+no ip cef
 no ipv6 cef
 !
 multilink bundle-name authenticated
 !
+cts logging verbose
 !
 !
-license udi pid CISCO1941/K9 sn FCZ1720C0QE
-license accept end user agreement
+license udi pid CISCO1941/K9 sn FCZ191271PN
 license boot module c1900 technology-package securityk9
 !
 !
-username DMC_R2_B8 password 7 0307570A151C
+username DMC_R1_B7 password 7 13061B13181F
 !
 redundancy
 !
@@ -44,7 +52,7 @@ redundancy
 !
 !
 !
-crypto isakmp policy 20
+crypto isakmp policy 10
  encr aes
  authentication pre-share
  group 2
@@ -57,7 +65,7 @@ crypto ipsec transform-set CRYPTMETHODE esp-aes esp-sha-hmac
 !
 !
 !
-crypto map mapVPN 20 ipsec-isakmp
+crypto map mapVPN 10 ipsec-isakmp
  set peer 42.0.0.18
  set transform-set CRYPTMETHODE
  match address VPN
@@ -71,40 +79,38 @@ interface Embedded-Service-Engine0/0
  shutdown
 !
 interface GigabitEthernet0/0
- ip address 10.200.1.2 255.255.255.252
- ip nat inside
- ip virtual-reassembly in
+ ip address 10.200.1.1 255.255.255.252
  duplex auto
  speed auto
 !
 interface GigabitEthernet0/1
- ip address 10.200.0.6 255.255.255.252
+ ip address 10.200.0.2 255.255.255.252
  ip nat inside
  ip virtual-reassembly in
- ip ospf lls disable
  duplex auto
  speed auto
 !
 interface Serial0/0/0
- ip address 42.0.0.5 255.255.255.252
+ ip address 42.0.0.1 255.255.255.252
  ip nat outside
  ip virtual-reassembly in
  encapsulation ppp
  ppp authentication chap
- ppp chap hostname FAI_R5_B3
- ppp chap password 7 121A09160118
+ ppp chap hostname FAI_R1_B3
+ ppp chap password 7 14141E0A1F17
  crypto map mapVPN
 !
 interface Serial0/0/1
  no ip address
  shutdown
- clock rate 2000000
+ clock rate 128000
 !
 router ospf 1
- router-id 2.2.2.2
+ router-id 1.1.1.1
  passive-interface Serial0/0/0
- network 10.200.0.4 0.0.0.3 area 0
+ network 10.200.0.0 0.0.0.3 area 0
  network 10.200.1.0 0.0.0.3 area 0
+ default-information originate
 !
 ip forward-protocol nd
 !
@@ -113,15 +119,17 @@ no ip http secure-server
 ip flow-export version 9
 !
 ip nat inside source list ACL_VPN interface Serial0/0/0 overload
-ip nat inside source static tcp 10.1.0.1 80 42.0.0.5 80 extendable
-ip nat inside source static tcp 10.1.0.1 443 42.0.0.5 443 extendable
-ip nat inside source static udp 10.1.0.1 1194 42.0.0.5 1194 extendable
-ip nat inside source static udp 10.1.0.5 5080 42.0.0.5 5060 extendable
+ip nat inside source static tcp 10.1.0.1 80 42.0.0.1 80 extendable
+ip nat inside source static tcp 10.1.0.1 443 42.0.0.1 443 extendable
+ip nat inside source static udp 10.1.0.50 1194 42.0.0.1 1194 extendable
+ip nat inside source static udp 10.1.0.5 5080 42.0.0.1 5060 extendable
+ip nat inside source static tcp 10.1.0.5 5080 42.0.0.1 5080 extendable
+ip nat inside source static udp 10.1.0.5 5080 42.0.0.1 5080 extendable
 ip route 0.0.0.0 0.0.0.0 Serial0/0/0
 ip route 10.1.0.0 255.255.255.0 GigabitEthernet0/1
-ip route 10.1.0.0 255.255.255.0 10.200.0.5
+ip route 10.1.0.0 255.255.255.0 10.200.0.1
 ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1
-ip route 192.168.1.0 255.255.255.0 10.200.0.5
+ip route 192.168.1.0 255.255.255.0 10.200.0.1
 !
 ip access-list extended ACL_VPN
  deny   ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
@@ -131,17 +139,18 @@ ip access-list extended ACL_VPN
 ip access-list extended VPN
  permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
  permit ip 10.0.0.0 0.255.255.255 192.168.0.0 0.0.0.255
+ip access-list extended VPN_TUNNEL
+ permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
+ip access-list extended acl_VPN
 !
 ip sla responder
 !
 !
-access-list 1 permit 192.168.1.0 0.0.0.255
-access-list 1 permit 10.1.0.0 0.0.0.255
 !
 control-plane
 !
 !
-banner motd ^CCRestricted Access! Authorized DMC Personnel Only!^C
+banner motd ^CRestricted Access! Authorized DMC Personnel Only!^C
 !
 line con 0
  exec-timeout 5 0
@@ -153,7 +162,6 @@ line 2
  no activation-character
  no exec
  transport preferred none
- transport input all
  transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
  stopbits 1
 line vty 0 4
@@ -161,13 +169,13 @@ line vty 0 4
  password 7 0822455D0A16
  logging synchronous
  login
- transport input all
+ transport input none
 line vty 5 15
  exec-timeout 5 0
  password 7 0822455D0A16
  logging synchronous
  login
- transport input all
+ transport input none
 !
 scheduler allocate 20000 1000
 !
