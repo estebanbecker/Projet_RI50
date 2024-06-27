@@ -1,5 +1,6 @@
+Current configuration : 2605 bytes
 !
-! Last configuration change at 15:30:01 UTC Thu Jun 27 2024
+! Last configuration change at 16:28:49 UTC Thu Jun 27 2024
 !
 version 15.4
 service timestamps debug datetime msec
@@ -49,8 +50,6 @@ redundancy
 !
 !
 !
-track 10 ip sla 1 reachability
-!
 !
 !
 crypto isakmp policy 10
@@ -63,7 +62,6 @@ crypto isakmp policy 20
  authentication pre-share
  group 2
 crypto isakmp key class address 42.0.0.1
-crypto isakmp key class address 42.0.0.5
 !
 crypto ipsec security-association lifetime seconds 86400
 !
@@ -77,11 +75,6 @@ crypto map mapVPN 10 ipsec-isakmp
  set transform-set CRYPTMETHODE
  match address VPN
 crypto map mapVPN 20 ipsec-isakmp
- set peer 42.0.0.5
- set transform-set CRYPTMETHODE
- match address VPN
-!
-crypto map mapVPN_BACKUP 10 ipsec-isakmp
  set peer 42.0.0.5
  set transform-set CRYPTMETHODE
  match address VPN
@@ -109,7 +102,7 @@ interface GigabitEthernet0/1
 !
 interface Serial0/0/0
  ip address 42.0.0.30 255.255.255.252
- crypto map mapVPN_BACKUP
+ crypto map mapVPN
 !
 interface Serial0/0/1
  ip address 42.0.0.18 255.255.255.252
@@ -121,6 +114,8 @@ interface Serial0/0/1
  ppp chap password 7 070C2D4D5D1A
  crypto map mapVPN
 !
+router ospf 1
+!
 ip forward-protocol nd
 !
 no ip http server
@@ -128,7 +123,7 @@ no ip http secure-server
 !
 ip nat inside source list ACL_VPN interface Serial0/0/1 overload
 ip route 0.0.0.0 0.0.0.0 Serial0/0/1 track 10
-ip route 0.0.0.0 0.0.0.0 Serial0/0/1 254
+ip route 0.0.0.0 0.0.0.0 Serial0/0/1
 !
 ip access-list extended ACL_VPN
  deny   ip 192.168.0.0 0.0.0.255 192.168.1.0 0.0.0.255
@@ -138,12 +133,6 @@ ip access-list extended VPN
  permit ip 192.168.0.0 0.0.0.255 192.168.1.0 0.0.0.255
  permit ip 192.168.0.0 0.0.0.255 10.0.0.0 0.255.255.255
 !
-ip sla 1
- icmp-echo 42.0.0.1
- threshold 2
- timeout 1000
- frequency 3
-ip sla schedule 1 life forever start-time now
 !
 !
 !
