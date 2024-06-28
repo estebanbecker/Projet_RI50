@@ -1,20 +1,6 @@
-DMC_SA1_A101#show run
-Building configuration...
-
-Current configuration : 4347 bytes
 !
-! Last configuration change at 02:20:49 UTC Mon Mar 1 1993
+! Last configuration change at 09:06:02 UTC Mon Mar 1 1993
 !
-
-
-
-
-
-
-
-
-
-
 version 15.0
 no service pad
 no service timestamps debug uptime
@@ -32,10 +18,37 @@ no aaa new-model
 system mtu routing 1500
 !
 !
-no ip domain-lookup
+nno ip domain-lookup
 !
 !
+crypto pki trustpoint TP-self-signed-3848248832
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3848248832
+ revocation-check none
+ rsakeypair TP-self-signed-3848248832
 !
+!
+crypto pki certificate chain TP-self-signed-3848248832
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33383438 32343838 3332301E 170D3933 30333031 30363138
+  31375A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 38343832
+  34383833 3230819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  810095D3 2B8A94ED 4F465E35 4CAB55F0 2ADEB0E3 E0BA3725 E82AD5CA E47B2986
+  3D4B5DC1 6B07CC07 E942220C 7670836E 0B21330C 13F32F63 FAA18DC1 07E32334
+  8BD4946D 7AD7E261 166CE873 916C43B8 4BA7AE33 A0CC2980 335FF515 94672CCD
+  F21D335D 11E86823 DCA20C75 9BF0BCDB 47881F61 02685F16 AFB544BD FFF3B62F
+  CEC10203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603
+  551D2304 18301680 14329AD1 6BDF5225 35E74710 797124F9 DF61427B BE301D06
+  03551D0E 04160414 329AD16B DF522535 E7471079 7124F9DF 61427BBE 300D0609
+  2A864886 F70D0101 05050003 81810053 935D5005 11B58B7F 6964F736 24893EAE
+  2FFE3983 8EAEFE6C B15A5C39 BF567E93 CA47337B EEB7F1D7 601ABEF2 44183C0A
+  8809B59F 50398452 76AEAF6A B9DC7A6D 274F4057 BBCE4C68 B0696697 B007B9E0
+  8B48A56E 4AEFD425 6E512BA0 9A1DB6D5 5BBB050B 719805D9 7F4192D6 196FB613
+  06F33512 281170F2 C0A3F30D 8B27AC
+        quit
 !
 !
 !
@@ -60,16 +73,18 @@ vlan internal allocation policy ascending
 !
 !
 interface FastEthernet0/1
- switchport access vlan 10
+ switchport access vlan 30
  switchport mode access
  spanning-tree portfast
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/2
- switchport access vlan 20
+ switchport access vlan 30
  switchport mode access
  spanning-tree portfast
  spanning-tree bpduguard enable
+ no shutdown
 !
 interface FastEthernet0/3
  switchport access vlan 150
@@ -116,7 +131,7 @@ interface FastEthernet0/9
  spanning-tree bpduguard enable
 !
 interface FastEthernet0/10
- switchport access vlan 50
+ switchport access vlan 500
  switchport mode access
  shutdown
  spanning-tree bpduguard enable
@@ -227,7 +242,7 @@ interface Vlan250
  ip address 192.168.1.230 255.255.255.240
  no shutdown
 !
-ip default-gateway 192.168.1.227
+ip default-gateway 192.168.1.238
 ip http server
 ip http secure-server
 !
