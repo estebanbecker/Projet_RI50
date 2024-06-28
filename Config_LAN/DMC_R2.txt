@@ -1,5 +1,5 @@
 !
-! Last configuration change at 15:28:57 UTC Thu Jun 27 2024
+! Last configuration change at 16:29:26 UTC Thu Jun 27 2024
 version 15.3
 no service timestamps debug uptime
 no service timestamps log uptime
@@ -76,6 +76,7 @@ interface GigabitEthernet0/0
  ip virtual-reassembly in
  duplex auto
  speed auto
+ no shutdown
 !
 interface GigabitEthernet0/1
  ip address 10.200.0.6 255.255.255.252
@@ -84,6 +85,7 @@ interface GigabitEthernet0/1
  ip ospf lls disable
  duplex auto
  speed auto
+ no shutdown
 !
 interface Serial0/0/0
  ip address 42.0.0.5 255.255.255.252
@@ -94,6 +96,7 @@ interface Serial0/0/0
  ppp chap hostname FAI_R5_B3
  ppp chap password 7 121A09160118
  crypto map mapVPN
+ no shutdown
 !
 interface Serial0/0/1
  no ip address
@@ -132,7 +135,6 @@ ip access-list extended VPN
  permit ip 192.168.1.0 0.0.0.255 192.168.0.0 0.0.0.255
  permit ip 10.0.0.0 0.255.255.255 192.168.0.0 0.0.0.255
 !
-ip sla responder
 !
 !
 access-list 1 permit 192.168.1.0 0.0.0.255
@@ -141,7 +143,7 @@ access-list 1 permit 10.1.0.0 0.0.0.255
 control-plane
 !
 !
-banner motd ^CCRestricted Access! Authorized DMC Personnel Only!^C
+banner motd $Restricted Access! Authorized DMC Personnel Only!$
 !
 line con 0
  exec-timeout 5 0
